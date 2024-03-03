@@ -9,29 +9,20 @@ const fetchAndReplace = async (url) => {
 };
 
 document.addEventListener("click", function (e) {
-  if (!e.target) return;
-  if (e.target.tagName === "A") {
-    e.preventDefault();
-    const href = e.target.getAttribute("href");
-    let url = null;
-    try {
-      url = new URL(href);
-    } catch (e) {}
+  if (!e.target || e.target.tagName !== "A") return;
+  e.preventDefault();
+  const href = e.target.getAttribute("href");
 
-    if (url && url.origin !== window.location.origin) {
+  try {
+    const url = new URL(href);
+
+    if (url.origin !== window.location.origin) {
       window.open(href, "_blank");
-      return;
     }
+  } catch (e) {}
 
-    const extension = href.split(".").pop();
-    if (extension && extension !== "html" && extension !== "htm") {
-      window.open(href, "_blank");
-      return;
-    }
-
-    window.history.pushState({}, "", href);
-    fetchAndReplace(href);
-  }
+  window.history.pushState({}, "", href);
+  fetchAndReplace(href);
 });
 
 window.addEventListener("popstate", () => {
