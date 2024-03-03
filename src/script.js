@@ -18,8 +18,19 @@ document.addEventListener("click", function (e) {
 
     if (url.origin !== window.location.origin) {
       window.open(href, "_blank");
+      return;
     }
   } catch (e) {}
+
+  if (href.includes("#")) {
+    const [path, fragment] = href.split("#");
+    if (path === window.location.pathname) {
+      document.getElementById(fragment).scrollIntoView({
+        behavior: "smooth",
+      });
+      return;
+    }
+  }
 
   window.history.pushState({}, "", href);
   fetchAndReplace(href);
